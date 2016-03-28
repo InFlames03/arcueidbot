@@ -22,7 +22,7 @@ def testRegex(regexes, msgText):
 def handle_msg(msg):
     flavor = telepot.flavor(msg)
     print(flavor)
-    pprint(msg)
+    #pprint(msg)
     if flavor == "normal":
         content_type, chat_type, chat_id = telepot.glance(msg, flavor)
         if content_type != "text":
@@ -34,7 +34,7 @@ def handle_msg(msg):
                 if ans is not None:
                     bot.sendMessage(chat_id, ans, reply_to_message_id=msg["message_id"], parse_mode="Markdown",
                                     disable_web_page_preview=True)
-        print(content_type, chat_type, chat_id)
+        #print(content_type, chat_type, chat_id)
 
     elif flavor == "inline_query":
         query_id, from_id, query_string = telepot.glance(msg, flavor)

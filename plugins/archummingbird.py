@@ -1,5 +1,6 @@
-import arconfig
-import hummingbird
+import json
+
+import requests
 from telepot.namedtuple import InlineQueryResultArticle
 
 name = "animefind"
@@ -9,23 +10,32 @@ usage = "/animefind <anime name>"
 regex = ["/animefind"]
 regexInline = ["/animefind"]
 
-bird = hummingbird.Hummingbird(arconfig.HUMMINGBIRD[0], arconfig.HUMMINGBIRD[1])
+
+def makeRequest(query):
+    url = "http://hummingbird.me/api/v1/%s" % query
+    resp = requests.get(url)
+    if resp.status_code != 200:
+        return None
+    return json.loads(resp.text, encoding="utf-8")
 
 
 def makeAns(anime):
-    ans = "[%s](%s)" % (anime.title, anime.url)
-    ans += "\n*Status*: %s" % anime.status
-    ans += "\n*%s* episodes (*%s*)\n" % (anime.episode_count, anime.show_type)
+    ans = "[%s](%s)" % (anime["title"], anime["url"])
+    ans += "\n*Status*: %s" % anime["status"]
+    ans += "\n*Airing*: %s - %s" % (anime["started_airing"], anime["finished_airing"])
+    ans += "\n*%s* episodes (*%s*)\n" % (anime["episode_count"], anime["show_type"])
     ans += "*Genres*: "
-    for i in range(len(anime.genres)):
+    for i in range(len(anime["genres"])):
 
-        for b in anime.genres[i].values():
+        for b in anime["genres"][i].values():
             ans += "%s" % b
-            if i != len(anime.genres) - 1:
+            if i != len(anime["genres"]) - 1:
                 ans += ', '
-    ans += "\n*Age rating*: %s" % anime.age_rating
+    ans += "\n*Age rating*: %s" % anime["age_rating"]
+    ans += "\n*User rating*: %s" % anime["community_rating"]
+    ans += "\n[MAL link](http://myanimelist.net/anime/%s)" % anime["mal_id"]
 
-    ans += "\n `%s`" % anime.synopsis
+    ans += "\n `%s`" % anime["synopsis"]
     return ans
 
 
@@ -34,7 +44,7 @@ def handler(bot, msg, fullMsg, flavor):
     if len(msg) <= 1:
         return usage
     if msg[0] == "/animefind":
-        results = bird.search_anime(msg)
+        results = makeRequest("/search/anime?query=%s" % msg[1])
         if len(results) == 0:
             return "Not found"
         else:

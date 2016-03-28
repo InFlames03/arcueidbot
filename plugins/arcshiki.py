@@ -1,8 +1,9 @@
-import tools.shikimoriapi
-from pprint import pprint
 import redis
 from telepot.namedtuple import InlineQueryResultArticle
+
 import arconfig
+import tools.shikimoriapi
+
 DB = redis.StrictRedis()
 
 name = "arcshiki"
