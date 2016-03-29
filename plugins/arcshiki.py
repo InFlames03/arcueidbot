@@ -8,7 +8,8 @@ DB = redis.StrictRedis()
 
 name = "arcshiki"
 description = "Shikimori.org api plugin"
-helpStr = ""
+helpStr = "/character <name> to find anime character\n" \
+          "/similar <anime> to find anime similar with given"
 usage = "/character <name>"
 regex = ["/character", "/similar"]
 regexInline = ["/character"]
